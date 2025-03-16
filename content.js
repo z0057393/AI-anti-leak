@@ -1,5 +1,7 @@
 const prompt = document.getElementById("prompt-textarea");
 
+const motsListe = ["interdit", "désactivé", "bloqué"];
+
 const regex = /test/i; // Remplace "monPattern" par ton expression régulière
 
 if (prompt) {
@@ -25,6 +27,18 @@ if (prompt) {
           }
         } else {
           console.log("❌ Pas de match :", texte);
+
+          // Sélectionner l'élément avec l'attribut data-testid
+          const element = document.querySelector('[data-testid="send-button"]');
+
+          if (element) {
+            element.disabled = false; // Désactiver l'élément
+            element.style.pointerEvents = "auto"; // Désactiver les interactions
+            element.style.opacity = "1"; // Rendre visuellement désactivé
+            console.log("Élément désactivé !");
+          } else {
+            console.log("Élément introuvable.");
+          }
         }
       }
     });
