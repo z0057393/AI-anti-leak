@@ -1,4 +1,4 @@
-export default class HtmlManager {
+export default class ChatGPTManager {
   constructor() {
     this.promptHTML = document.getElementById("prompt-textarea");
     this.buttonHTML = document.querySelector('[data-testid="send-button"]');

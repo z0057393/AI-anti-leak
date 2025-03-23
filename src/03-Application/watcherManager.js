@@ -1,4 +1,4 @@
-import HtmlManager from "../02-Infrastructure/HtmlManager";
+import HtmlManager from "./HtmlManager";
 import WordsManager from "../02-Infrastructure/wordsManager";
 import RegexManager from "../04-Domain/regexManager";
 
