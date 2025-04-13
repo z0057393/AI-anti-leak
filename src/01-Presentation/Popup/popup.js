@@ -1,14 +1,11 @@
-// popup.js
-import browser from "webextension-polyfill";
+if (typeof browser !== "undefined" && browser.storage) {
+  console.log("✅ Accès à browser.storage OK");
 
-if (!browser.runtime) {
-  console.error("webextension-polyfill ne fonctionne pas ici");
+  browser.storage.local.set({ motsInterdits: ["test"] });
+
+  browser.storage.local.get("motsInterdits").then((result) => {
+    console.log("Mots récupérés :", result.motsInterdits);
+  });
+} else {
+  console.error("❌ browser.storage est inaccessible");
 }
-
-console.log("✅ Script exécuté depuis fichier externe !");
-
-browser.storage.local.set({ motsInterdits: ["test"] });
-
-browser.storage.local.get("motsInterdits").then((result) => {
-  console.log("Mots récupérés :", result.motsInterdits);
-});
