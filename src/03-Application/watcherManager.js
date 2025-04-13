@@ -9,9 +9,9 @@ export default class WatcherManager {
     this.regexManager = new RegexManager();
   }
 
-  start() {
+  async start() {
     const prompt = this.getPrompt();
-    const dictionnary = this.getWords();
+    const dictionnary = await this.getWords();
 
     if (prompt) {
       const observerCallback = this.initObserver(dictionnary);
@@ -36,8 +36,8 @@ export default class WatcherManager {
   getSendButton() {
     return this.htmlManager.getButton();
   }
-  getWords() {
-    return this.wordsManager.getWords();
+  async getWords() {
+    return await this.wordsManager.getWords();
   }
 
   initObserver(dictionnary) {

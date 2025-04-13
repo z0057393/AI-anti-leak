@@ -1,9 +1,13 @@
+import browser from "webextension-polyfill";
+
 export default class WordsManager {
   constructor() {
-    this.words = ["interdit", "danger", "bloqué", "censuré"];
+    this.words = [];
   }
 
-  getWords() {
+  async getWords() {
+    const result = await browser.storage.local.get("motsInterdits");
+    this.words = result.motsInterdits || [];
     return this.words;
   }
 }
