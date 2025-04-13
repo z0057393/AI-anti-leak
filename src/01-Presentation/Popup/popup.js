@@ -2,6 +2,23 @@ if (typeof browser !== "undefined" && browser.storage) {
   console.log("✅ Loaded");
   const addButton = document.getElementById("add");
   const inputMot = document.getElementById("inputMot");
+  const listeMots = document.getElementById("listeMots");
+
+  // Fonction pour afficher les mots
+  function afficherMots(mots) {
+    listeMots.innerHTML = ""; // clear
+    mots.forEach((mot) => {
+      const li = document.createElement("li");
+      li.textContent = mot;
+      listeMots.appendChild(li);
+    });
+  }
+
+  // Charger les mots au démarrage de la popup
+  browser.storage.local.get("motsInterdits").then((result) => {
+    const mots = result.motsInterdits || [];
+    afficherMots(mots);
+  });
 
   if (addButton && inputMot) {
     console.log("✅ Vars init");
@@ -20,6 +37,7 @@ if (typeof browser !== "undefined" && browser.storage) {
             .set({ motsInterdits: nouveauxMots })
             .then(() => {
               console.log("✅ Mot ajouté :", mot);
+              afficherMots(nouveauxMots);
               inputMot.value = ""; // reset input
             });
         });
