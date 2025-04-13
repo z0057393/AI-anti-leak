@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill";
+
 if (typeof browser !== "undefined" && browser.storage) {
   console.log("✅ Loaded");
   const addButton = document.getElementById("add");
