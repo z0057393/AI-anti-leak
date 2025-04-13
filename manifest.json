@@ -3,7 +3,10 @@
   "name": "AI Anti-Leak",
   "version": "0.1",
   "description": "Marre de faire fuiter des secrets sur ChatGPT ??",
-  "permissions": ["scripting", "tabs"],
+  "permissions": ["scripting", "tabs", "storage"],
+  "action": {
+    "default_popup": "src/01-Presentation/Popup/popup.html"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
