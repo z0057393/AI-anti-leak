@@ -10,7 +10,7 @@ export default class WatcherManager {
   }
 
   async start() {
-    const prompt = this.getPrompt();
+    const prompt = await this.getPrompt();
     const dictionnary = await this.getWords();
 
     if (prompt) {
@@ -29,8 +29,8 @@ export default class WatcherManager {
     }
   }
 
-  getPrompt() {
-    return this.htmlManager.getPrompt();
+  async getPrompt() {
+    return await this.htmlManager.waitForPrompt();
   }
 
   getSendButton() {

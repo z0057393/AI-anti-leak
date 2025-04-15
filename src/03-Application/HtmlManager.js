@@ -20,4 +20,22 @@ export default class HtmlManager {
   unlockButton() {
     this.aiFactory.unlockButton();
   }
+
+  async waitForPrompt(timeout = 10000, intervalTime = 300) {
+    const start = Date.now();
+
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        const prompt = this.getPrompt();
+
+        if (prompt instanceof Node) {
+          clearInterval(interval);
+          resolve(prompt);
+        } else if (Date.now() - start > timeout) {
+          clearInterval(interval);
+          reject(new Error("Prompt introuvable après timeout"));
+        }
+      }, intervalTime);
+    });
+  }
 }

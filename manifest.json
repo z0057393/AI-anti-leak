@@ -3,14 +3,21 @@
   "name": "AI Anti-Leak",
   "version": "0.1",
   "description": "Marre de faire fuiter des secrets sur ChatGPT ??",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "AIAL@z0057393.com",
+      "strict_min_version": "58.0"
+    }
+  },
   "permissions": ["scripting", "tabs", "storage"],
   "action": {
-    "default_popup": "src/01-Presentation/Popup/popup.html"
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["dist/bundle-content.js"]
+      "matches": ["https://chatgpt.com/"],
+      "js": ["bundle-content.js"],
+      "run_at": "document_start"
     }
   ]
 }
