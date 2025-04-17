@@ -11,10 +11,9 @@ export default class WatcherManager {
 
   async start() {
     const prompt = await this.getPrompt();
-    const dictionnary = await this.getWords();
 
     if (prompt) {
-      const observerCallback = this.initObserver(dictionnary);
+      const observerCallback = this.initObserver();
       const observer = new MutationObserver(observerCallback);
 
       observer.observe(prompt, {
@@ -40,13 +39,14 @@ export default class WatcherManager {
     return await this.wordsManager.getWords();
   }
 
-  initObserver(dictionnary) {
+  initObserver() {
     return (mutations) => {
-      mutations.forEach((mutation) => {
+      mutations.forEach(async (mutation) => {
         if (
           mutation.type === "childList" ||
           mutation.type === "characterData"
         ) {
+          const dictionnary = await this.wordsManager.getWords();
           this.checkMutation(mutation, dictionnary);
         }
       });
