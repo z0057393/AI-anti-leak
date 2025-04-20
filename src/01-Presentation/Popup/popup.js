@@ -7,9 +7,8 @@ if (typeof browser !== "undefined" && browser.storage) {
   const inputMot = document.getElementById("inputMot");
   const listeMots = document.getElementById("listeMots");
 
-  // Fonction pour afficher les mots
   function afficherMots(mots) {
-    listeMots.innerHTML = ""; // clear
+    listeMots.innerHTML = "";
     mots.forEach((mot) => {
       const li = document.createElement("li");
       li.textContent = mot;
@@ -17,21 +16,16 @@ if (typeof browser !== "undefined" && browser.storage) {
     });
   }
 
-  // Charger les mots au démarrage de la popup
   browser.storage.local.get("motsInterdits").then((result) => {
     const mots = result.motsInterdits || [];
     afficherMots(mots);
   });
 
   if (addButton && inputMot) {
-    console.log("✅ Vars init");
     addButton.addEventListener("click", () => {
       const mot = inputMot.value.trim();
 
       if (mot) {
-        console.log("🔤 Mot saisi :", mot);
-
-        // Exemple : ajouter à un tableau existant dans le storage
         browser.storage.local.get("motsInterdits").then((result) => {
           const anciensMots = result.motsInterdits || [];
           const nouveauxMots = [...anciensMots, mot];
@@ -39,9 +33,8 @@ if (typeof browser !== "undefined" && browser.storage) {
           browser.storage.local
             .set({ motsInterdits: nouveauxMots })
             .then(() => {
-              console.log("✅ Mot ajouté :", mot);
               afficherMots(nouveauxMots);
-              inputMot.value = ""; // reset input
+              inputMot.value = "";
             });
         });
       } else {
@@ -56,21 +49,15 @@ if (typeof browser !== "undefined" && browser.storage) {
       const mot = inputMot.value.trim();
 
       if (mot) {
-        console.log("🔤 Mot saisi :", mot);
-
-        // Exemple : retirer un mot du tableau dans le storage
         browser.storage.local.get("motsInterdits").then((result) => {
           const anciensMots = result.motsInterdits || [];
-
-          // Filtrer le mot à supprimer (insensible à la casse si tu veux)
           const nouveauxMots = anciensMots.filter((m) => m !== mot);
 
           browser.storage.local
             .set({ motsInterdits: nouveauxMots })
             .then(() => {
-              console.log("❌ Mot supprimé :", mot);
               afficherMots(nouveauxMots);
-              inputMot.value = ""; // reset input si besoin
+              inputMot.value = "";
             });
         });
       } else {
