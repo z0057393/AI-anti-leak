@@ -36,7 +36,7 @@ h1 {
   border-radius: 10vw;
 }
 
-#add {
+.button {
   position: relative;
   float: right;
   height: 100%;

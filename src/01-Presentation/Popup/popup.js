@@ -3,6 +3,7 @@ import browser from "webextension-polyfill";
 if (typeof browser !== "undefined" && browser.storage) {
   console.log("✅ Loaded");
   const addButton = document.getElementById("add");
+  const removeButton = document.getElementById("remove");
   const inputMot = document.getElementById("inputMot");
   const listeMots = document.getElementById("listeMots");
 
@@ -41,6 +42,35 @@ if (typeof browser !== "undefined" && browser.storage) {
               console.log("✅ Mot ajouté :", mot);
               afficherMots(nouveauxMots);
               inputMot.value = ""; // reset input
+            });
+        });
+      } else {
+        console.warn("⛔ Aucun mot saisi !");
+      }
+    });
+  }
+
+  if (removeButton && inputMot) {
+    console.log("Remove word");
+    removeButton.addEventListener("click", () => {
+      const mot = inputMot.value.trim();
+
+      if (mot) {
+        console.log("🔤 Mot saisi :", mot);
+
+        // Exemple : retirer un mot du tableau dans le storage
+        browser.storage.local.get("motsInterdits").then((result) => {
+          const anciensMots = result.motsInterdits || [];
+
+          // Filtrer le mot à supprimer (insensible à la casse si tu veux)
+          const nouveauxMots = anciensMots.filter((m) => m !== mot);
+
+          browser.storage.local
+            .set({ motsInterdits: nouveauxMots })
+            .then(() => {
+              console.log("❌ Mot supprimé :", mot);
+              afficherMots(nouveauxMots);
+              inputMot.value = ""; // reset input si besoin
             });
         });
       } else {
