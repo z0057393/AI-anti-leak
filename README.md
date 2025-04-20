@@ -7,7 +7,7 @@
   <h3 align="center">AI Anti-Leak</h3>
 
   <p align="center">
-    Web extension to prevent leaking informations througth large language model
+    Web extension to prevent leaking information through large language models.
     <br />
   </p>
 </div>
