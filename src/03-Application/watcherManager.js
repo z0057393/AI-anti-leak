@@ -18,8 +18,7 @@ export default class WatcherManager {
       const observerCallback = this.initObserver();
       const observer = new MutationObserver((mutations) => {
         if (this.htmlManager.isUpdating) return;
-        observerCallback(mutations); // tableau, pas mutation seule
-        console.log(this.htmlManager.isUpdating);
+        observerCallback(mutations);
       });
 
       observer.observe(prompt, {

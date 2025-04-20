@@ -85,11 +85,6 @@ export default class HtmlManager {
     for (const prop of this.STYLES_IMPORTANTS) {
       styles[prop] = computedStyle.getPropertyValue(prop);
     }
-    console.log(styles);
-    console.log(
-      contentEditableElement.offsetTop - contentEditableElement.marginTop
-    );
-    console.log(contentEditableElement);
     this.applyStyles(mirrorDiv, styles, {
       position: "absolute",
       "z-index": "10",

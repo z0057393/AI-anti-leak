@@ -44,7 +44,6 @@ if (typeof browser !== "undefined" && browser.storage) {
   }
 
   if (removeButton && inputMot) {
-    console.log("Remove word");
     removeButton.addEventListener("click", () => {
       const mot = inputMot.value.trim();
 
