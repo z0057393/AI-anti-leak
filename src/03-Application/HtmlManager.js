@@ -5,6 +5,7 @@ export default class HtmlManager {
     this.aiFactory = new aiFactory();
     this.isUpdating = false;
     this.mirrorDiv = null;
+    this.enterKeyListener = null;
   }
 
   getPrompt() {
@@ -91,7 +92,7 @@ export default class HtmlManager {
     this.mirrorDiv.style.height = contentEditableElement.offsetHeight + "px";
   }
 
-  HighlightWord(dictionnary, rootElement) {
+  highlightWord(dictionnary, rootElement) {
     // Vérification si rootElement est un élément valide
     if (!(rootElement instanceof HTMLElement)) {
       return;
@@ -124,5 +125,29 @@ export default class HtmlManager {
 
   updateMirrorText(html) {
     this.mirrorDiv.innerHTML = html;
+  }
+
+  lockEnterKey() {
+    if (this.enterKeyListener != null) return;
+    console.log("lockEnterKey");
+
+    // Stocker le handler dans this.enterKeyListener
+    this.enterKeyListener = function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        console.log("🔒 Entrée bloquée");
+      }
+    };
+
+    document.addEventListener("keydown", this.enterKeyListener, true);
+  }
+
+  unlockEnterKey() {
+    if (this.enterKeyListener != null) {
+      document.removeEventListener("keydown", this.enterKeyListener, true);
+      this.enterKeyListener = null;
+      console.log("unlockEnterKey");
+    }
   }
 }

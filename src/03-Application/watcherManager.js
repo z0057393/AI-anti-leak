@@ -64,14 +64,14 @@ export default class WatcherManager {
     const isMatch = this.regexManager.CheckPrompt(dictionnary, content);
     if (isMatch) {
       if (this.lastContentFound != content) {
+        this.htmlManager.lockEnterKey();
+
         const targetNode =
           mutation.target.nodeType === Node.TEXT_NODE
             ? mutation.target.parentElement
             : mutation.target;
 
-        console.log("Node cible pour surlignage : ", targetNode);
-
-        this.htmlManager.HighlightWord(dictionnary, targetNode);
+        this.htmlManager.highlightWord(dictionnary, targetNode);
 
         const btn = this.getSendButton();
         if (btn) {
@@ -80,6 +80,7 @@ export default class WatcherManager {
         this.lastContentFound = content;
       }
     } else {
+      this.htmlManager.unlockEnterKey();
       this.htmlManager.updateMirrorText(mutation.target.textContent);
     }
   }
