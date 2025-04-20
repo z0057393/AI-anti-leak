@@ -3,12 +3,12 @@ import browser from "webextension-polyfill";
 if (typeof browser !== "undefined" && browser.storage) {
   console.log("✅ Loaded");
   const addButton = document.getElementById("add");
+  const removeButton = document.getElementById("remove");
   const inputMot = document.getElementById("inputMot");
   const listeMots = document.getElementById("listeMots");
 
-  // Fonction pour afficher les mots
   function afficherMots(mots) {
-    listeMots.innerHTML = ""; // clear
+    listeMots.innerHTML = "";
     mots.forEach((mot) => {
       const li = document.createElement("li");
       li.textContent = mot;
@@ -16,21 +16,16 @@ if (typeof browser !== "undefined" && browser.storage) {
     });
   }
 
-  // Charger les mots au démarrage de la popup
   browser.storage.local.get("motsInterdits").then((result) => {
     const mots = result.motsInterdits || [];
     afficherMots(mots);
   });
 
   if (addButton && inputMot) {
-    console.log("✅ Vars init");
     addButton.addEventListener("click", () => {
       const mot = inputMot.value.trim();
 
       if (mot) {
-        console.log("🔤 Mot saisi :", mot);
-
-        // Exemple : ajouter à un tableau existant dans le storage
         browser.storage.local.get("motsInterdits").then((result) => {
           const anciensMots = result.motsInterdits || [];
           const nouveauxMots = [...anciensMots, mot];
@@ -38,9 +33,30 @@ if (typeof browser !== "undefined" && browser.storage) {
           browser.storage.local
             .set({ motsInterdits: nouveauxMots })
             .then(() => {
-              console.log("✅ Mot ajouté :", mot);
               afficherMots(nouveauxMots);
-              inputMot.value = ""; // reset input
+              inputMot.value = "";
+            });
+        });
+      } else {
+        console.warn("⛔ Aucun mot saisi !");
+      }
+    });
+  }
+
+  if (removeButton && inputMot) {
+    removeButton.addEventListener("click", () => {
+      const mot = inputMot.value.trim();
+
+      if (mot) {
+        browser.storage.local.get("motsInterdits").then((result) => {
+          const anciensMots = result.motsInterdits || [];
+          const nouveauxMots = anciensMots.filter((m) => m !== mot);
+
+          browser.storage.local
+            .set({ motsInterdits: nouveauxMots })
+            .then(() => {
+              afficherMots(nouveauxMots);
+              inputMot.value = "";
             });
         });
       } else {

@@ -7,21 +7,25 @@ export default class WatcherManager {
     this.wordsManager = new WordsManager();
     this.htmlManager = new HtmlManager();
     this.regexManager = new RegexManager();
+    this.lastContentFound = "";
   }
 
   async start() {
     const prompt = await this.getPrompt();
 
     if (prompt) {
+      this.htmlManager.createMirrorDiv(prompt);
       const observerCallback = this.initObserver();
-      const observer = new MutationObserver(observerCallback);
+      const observer = new MutationObserver((mutations) => {
+        if (this.htmlManager.isUpdating) return;
+        observerCallback(mutations);
+      });
 
       observer.observe(prompt, {
         childList: true,
         subtree: true,
         characterData: true,
       });
-
       console.log("Observation des changements du prompt démarrée !");
     } else {
       console.log("Aucun prompt trouvé");
@@ -54,15 +58,28 @@ export default class WatcherManager {
   }
 
   checkMutation(mutation, dictionnary) {
-    const isMatch = this.regexManager.CheckPrompt(
-      dictionnary,
-      this.getTextMutation(mutation)
-    );
+    const content = this.getTextMutation(mutation);
+    const isMatch = this.regexManager.CheckPrompt(dictionnary, content);
+    if (isMatch) {
+      if (this.lastContentFound != content) {
+        this.htmlManager.lockEnterKey();
 
-    if (this.getSendButton()) {
-      this.lockOrUnlockSendButton(isMatch);
+        const targetNode =
+          mutation.target.nodeType === Node.TEXT_NODE
+            ? mutation.target.parentElement
+            : mutation.target;
+
+        this.htmlManager.highlightWord(dictionnary, targetNode);
+
+        const btn = this.getSendButton();
+        if (btn) {
+          this.lockOrUnlockSendButton(isMatch);
+        }
+        this.lastContentFound = content;
+      }
     } else {
-      console.log("Élément introuvable.");
+      this.htmlManager.unlockEnterKey();
+      this.htmlManager.updateMirrorText(mutation.target.textContent);
     }
   }
 

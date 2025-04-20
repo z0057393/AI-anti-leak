@@ -19,6 +19,8 @@ const copyAssets = copy({
   targets: [
     { src: "manifest.json", dest: "dist" },
     { src: "src/01-Presentation/Popup/popup.html", dest: "dist" },
+    { src: "src/01-Presentation/Popup/popup.css", dest: "dist" },
+    { src: "icons/*", dest: "dist/icons" },
   ],
   copyOnce: true,
 });
