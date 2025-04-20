@@ -36,7 +36,7 @@
 
 ## About The Project
 
-AI Anti-Leak is a privacy-focused browser extension designed to protect users from accidentally submitting sensitive or restricted information throw their prompts to large language models (LLMs) like ChatGPT, Claude, or Gemini.
+AI Anti-Leak is a privacy-focused browser extension designed to protect users from accidentally submitting sensitive or restricted information through their prompts to large language models (LLMs) like ChatGPT, Claude, or Gemini.
 
 By allowing users to define a custom list of forbidden words, the extension actively monitors the input fields of LLM interfaces. If a prompt contains any of the specified keywords, the extension prevents it from being sent by disabling the submit button in real-time.
 
