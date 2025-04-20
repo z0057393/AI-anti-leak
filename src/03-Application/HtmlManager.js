@@ -6,6 +6,40 @@ export default class HtmlManager {
     this.isUpdating = false;
     this.mirrorDiv = null;
     this.enterKeyListener = null;
+    this.STYLES_IMPORTANTS = [
+      "position",
+      "top",
+      "left",
+      "right",
+      "bottom",
+      "width",
+      "height",
+      "margin",
+      "margin-top",
+      "padding",
+      "display",
+      "color",
+      "font-size",
+      "font-family",
+      "font-weight",
+      "line-height",
+      "text-align",
+      "border",
+      "border-radius",
+      "box-shadow",
+      "background",
+      "background-color",
+      "z-index",
+      "visibility",
+      "opacity",
+      "overflow",
+      "letter-spacing",
+      "word-spacing",
+      "font-kerning",
+      "font-feature-settings",
+      "font-variant",
+      "text-rendering",
+    ];
   }
 
   getPrompt() {
@@ -43,84 +77,53 @@ export default class HtmlManager {
   }
 
   createMirrorDiv(contentEditableElement) {
-    // Création de la div miroir
     const mirrorDiv = document.createElement("div");
 
-    // Positionnement absolu pour que la div miroir soit positionnée exactement comme le contentEditable
-    mirrorDiv.style.position = "absolute";
-    mirrorDiv.style.top = contentEditableElement.offsetTop + "px"; // Position verticale
-    mirrorDiv.style.left = contentEditableElement.offsetLeft + "px"; // Position horizontale
-    mirrorDiv.style.zIndex = "10"; // Au-dessus de l'élément contentEditable
-    mirrorDiv.style.pointerEvents = "none"; // Ne pas interagir avec la div miroir
-    mirrorDiv.style.whiteSpace = "pre-wrap"; // S'assurer que le texte se comporte comme dans contentEditable
+    const styles = {};
+    const computedStyle = window.getComputedStyle(contentEditableElement);
 
-    // Réplique des propriétés de la police
-    const computedStyles = window.getComputedStyle(contentEditableElement);
-    mirrorDiv.style.fontFamily = computedStyles.fontFamily;
-    mirrorDiv.style.fontSize = computedStyles.fontSize;
-    mirrorDiv.style.lineHeight = computedStyles.lineHeight;
-    mirrorDiv.style.fontWeight = computedStyles.fontWeight;
-    mirrorDiv.style.fontStyle = computedStyles.fontStyle;
-    mirrorDiv.style.textTransform = computedStyles.textTransform; // Si le texte est transformé en majuscules/minuscules
-    mirrorDiv.style.letterSpacing = computedStyles.letterSpacing; // Espacement des lettres
-    mirrorDiv.style.wordSpacing = computedStyles.wordSpacing; // Espacement des mots
-
-    // Réplique des autres styles de mise en page (padding, margin, etc.)
-    mirrorDiv.style.padding = computedStyles.padding;
-    mirrorDiv.style.margin = computedStyles.margin;
-    mirrorDiv.style.width = contentEditableElement.offsetWidth + "px"; // Largeur identique à contentEditable
-    mirrorDiv.style.height = contentEditableElement.offsetHeight + "px"; // Hauteur identique à contentEditable
-    mirrorDiv.style.overflow = "hidden"; // Pour éviter le débordement de texte
-
-    // Ajout de la div miroir au DOM
+    for (const prop of this.STYLES_IMPORTANTS) {
+      styles[prop] = computedStyle.getPropertyValue(prop);
+    }
+    console.log(styles);
+    console.log(
+      contentEditableElement.offsetTop - contentEditableElement.marginTop
+    );
+    console.log(contentEditableElement);
+    this.applyStyles(mirrorDiv, styles, {
+      position: "absolute",
+      "z-index": "10",
+      pointerEvents: "none",
+      "user-select": "none",
+      top:
+        (
+          contentEditableElement.offsetTop - parseFloat(styles["margin-top"])
+        ).toString() + "px",
+    });
     contentEditableElement.parentElement.appendChild(mirrorDiv);
 
-    // Sauvegarder la référence à la div miroir dans l'objet
     this.mirrorDiv = mirrorDiv;
-
-    // Mise à jour des dimensions et position en cas de redimensionnement du contentEditable
-    this.updateMirrorDivPosition(contentEditableElement);
   }
 
-  updateMirrorDivPosition(contentEditableElement) {
-    // Mise à jour de la position et des dimensions de la div miroir si contentEditable est déplacé ou redimensionné
-    console.log(contentEditableElement.offsetTop);
-    console.log(contentEditableElement.offsetTop);
-    this.mirrorDiv.style.top = contentEditableElement.offsetTop - 8 + "px";
-    this.mirrorDiv.style.left = contentEditableElement.offsetLeft + "px";
-    this.mirrorDiv.style.width = contentEditableElement.offsetWidth + "px";
-    this.mirrorDiv.style.height = contentEditableElement.offsetHeight + "px";
+  applyStyles(element, styles, override = {}) {
+    for (const [prop, value] of Object.entries(styles)) {
+      const finalValue = override[prop] ?? value;
+      element.style.setProperty(prop, finalValue);
+    }
   }
 
   highlightWord(dictionnary, rootElement) {
-    // Vérification si rootElement est un élément valide
-    if (!(rootElement instanceof HTMLElement)) {
-      return;
-    }
+    if (!(rootElement instanceof HTMLElement)) return;
 
-    // Fonction de mise à jour du contenu de la div miroir
-    const updateMirror = () => {
-      let html = rootElement.innerText;
-
-      // Surbrillance des mots dans le texte
-      dictionnary.forEach((word) => {
-        const regex = new RegExp(`\\b(${word})\\b`, "gi");
-        html = html.replace(
-          regex,
-          `<span style="background-color:red; color: white;">$1</span>`
-        );
-      });
-
-      this.mirrorDiv.innerHTML = html;
-    };
-
-    // Mise à jour initiale du miroir
-    updateMirror();
-
-    // Écoute des événements qui modifient le contenu
-    rootElement.addEventListener("input", updateMirror);
-    rootElement.addEventListener("keydown", updateMirror);
-    rootElement.addEventListener("keyup", updateMirror);
+    let html = rootElement.innerText;
+    dictionnary.forEach((word) => {
+      const regex = new RegExp(`\\b(${word})\\b`, "gi");
+      html = html.replace(
+        regex,
+        `<span style="background-color:red; color: white;">$1</span>`
+      );
+    });
+    this.mirrorDiv.innerHTML = html;
   }
 
   updateMirrorText(html) {
@@ -129,17 +132,12 @@ export default class HtmlManager {
 
   lockEnterKey() {
     if (this.enterKeyListener != null) return;
-    console.log("lockEnterKey");
-
-    // Stocker le handler dans this.enterKeyListener
     this.enterKeyListener = function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        console.log("🔒 Entrée bloquée");
       }
     };
-
     document.addEventListener("keydown", this.enterKeyListener, true);
   }
 
@@ -147,7 +145,6 @@ export default class HtmlManager {
     if (this.enterKeyListener != null) {
       document.removeEventListener("keydown", this.enterKeyListener, true);
       this.enterKeyListener = null;
-      console.log("unlockEnterKey");
     }
   }
 }

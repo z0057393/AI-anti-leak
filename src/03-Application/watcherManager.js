@@ -60,7 +60,6 @@ export default class WatcherManager {
 
   checkMutation(mutation, dictionnary) {
     const content = this.getTextMutation(mutation);
-    if (!content?.trim()) return;
     const isMatch = this.regexManager.CheckPrompt(dictionnary, content);
     if (isMatch) {
       if (this.lastContentFound != content) {
