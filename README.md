@@ -56,12 +56,12 @@ You can install the AI Anti-Leak by clicking on this link
 
 ## Browser Compatibility
 
-| Browser | Supported | Status     | Version |
-| ------- | --------- | ---------- | ------- |
-| Firefox | ✅        | Supported  | 137.0.2 |
-| Chrome  | ⚠️        | Not Tested |         |
-| Edge    | ⚠️        | Not Tested |         |
-| Safari  | ⚠️        | Not Tested |         |
+| Browser | Supported | Status     | Version       |
+| ------- | --------- | ---------- | ------------- |
+| Firefox | ✅        | Supported  | 137.0.2       |
+| Chrome  | ✅        | Supported  | 135.0.7049.96 |
+| Edge    | ⚠️        | Not Tested |               |
+| Safari  | ⚠️        | Not Tested |               |
 
 ## Getting Started
 
@@ -106,3 +106,9 @@ Follow these steps for building the web extension on your computer
 Firefox : go to [about:debugging#/runtime/this-firefox](about:debugging#/runtime/this-firefox)
 
 And load the extension.
+
+Chrome : go to [chrome://extensions](chrome://extensions)
+
+toggle dev mode
+
+And load the extension
