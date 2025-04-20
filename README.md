@@ -1,13 +1,13 @@
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/z0057393/AI-anti-leak">
+    <img src="images/base-icon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">AI Anti-Leak</h3>
 
   <p align="center">
-    Web extension to prevent leaking informations throw large language model
+    Web extension to prevent leaking informations througth large language model
     <br />
   </p>
 </div>
@@ -17,23 +17,18 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
+    </li>
+     <li>
+      <a href="#browser-compatibility">Browser Compatibility</a>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#deploy">Deploy</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -101,7 +96,7 @@ Follow these steps for building the web extension on your computer
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Deploy
+### Deploy
 
 Firefox : go to [about:debugging#/runtime/this-firefox](about:debugging#/runtime/this-firefox)
 
@@ -112,3 +107,5 @@ Chrome : go to [chrome://extensions](chrome://extensions)
 toggle dev mode
 
 And load the extension
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
