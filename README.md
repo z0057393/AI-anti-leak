@@ -58,6 +58,20 @@ You can install the AI Anti-Leak by clicking on this link
 | Edge    | ⚠️        | Not Tested |               |
 | Safari  | ⚠️        | Not Tested |               |
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## LLMs Compatibility
+
+| Browser   | Supported | Status      |
+| --------- | --------- | ----------- |
+| ChatGPT   | ✅        | Supported   |
+| MistralAI | ❌        | Coming soon |
+| Deapseek  | ❌        | Coming soon |
+| Claude    | ❌        | Coming soon |
+| Gemini    | ❌        | Coming soon |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Getting Started
 
 Follow these steps for building the web extension on your computer
