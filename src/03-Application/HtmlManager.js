@@ -87,7 +87,7 @@ export default class HtmlManager {
     }
     this.applyStyles(mirrorDiv, styles, {
       position: "absolute",
-      "z-index": "10",
+      "z-index": "-1",
       pointerEvents: "none",
       "user-select": "none",
       top:
