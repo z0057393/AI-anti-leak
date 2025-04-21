@@ -107,36 +107,42 @@ export default class HtmlManager {
     }
   }
 
-  highlightWord(dictionnary, rootElement) {
-    // if (!(rootElement instanceof HTMLElement)) return;
+  highlightWord(dictionnary, html) {
+    this.mirrorDiv.innerHTML = "";
 
-    // let html = rootElement.innerText;
-    // dictionnary.forEach((word) => {
-    //   const regex = new RegExp(`\\b(${word})\\b`, "gi");
-    //   html = html.replace(
-    //     regex,
-    //     `<span style="background-color:red; color: white;">$1</span>`
-    //   );
-    // });
-    // this.mirrorDiv.innerHTML = html;
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
 
-    if (!(rootElement instanceof HTMLElement)) return;
+    const walk = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const frag = document.createDocumentFragment();
+        const words = node.textContent.split(/(\b)/);
 
-    const text = rootElement.innerText;
-    const words = text.split(/\b/); // découpe par mots
-    this.mirrorDiv.innerHTML = ""; // vide le container
+        words.forEach((word) => {
+          if (
+            dictionnary.some(
+              (target) => target.toLowerCase() === word.toLowerCase()
+            )
+          ) {
+            const span = document.createElement("span");
+            span.style.backgroundColor = "red";
+            span.style.color = "white";
+            span.textContent = word;
+            frag.appendChild(span);
+          } else {
+            frag.appendChild(document.createTextNode(word));
+          }
+        });
 
-    words.forEach((part) => {
-      const span = document.createElement("span");
-      if (
-        dictionnary.some((word) => word.toLowerCase() === part.toLowerCase())
-      ) {
-        span.style.backgroundColor = "red";
-        span.style.color = "white";
+        node.replaceWith(frag);
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        Array.from(node.childNodes).forEach(walk);
       }
-      span.textContent = part;
-      this.mirrorDiv.appendChild(span);
-    });
+    };
+
+    Array.from(tempDiv.childNodes).forEach(walk);
+
+    this.mirrorDiv.appendChild(tempDiv);
   }
 
   updateMirrorText(html) {
@@ -144,7 +150,7 @@ export default class HtmlManager {
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
-    doc.body.style.backgroundColor = "transparent"; // ou une couleur spécifique si tu veux
+    doc.body.style.backgroundColor = "transparent";
 
     this.mirrorDiv.appendChild(doc.body);
   }
