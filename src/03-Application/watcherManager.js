@@ -15,20 +15,40 @@ export default class WatcherManager {
 
     if (prompt) {
       this.htmlManager.createMirrorDiv(prompt);
-      const observerCallback = this.initObserver();
-      const observer = new MutationObserver((mutations) => {
-        if (this.htmlManager.isUpdating) return;
-        observerCallback(mutations);
-      });
 
-      observer.observe(prompt, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-      });
+      prompt.addEventListener("input", (event) => this.eventDetected(event));
+
+      // prompt.addEventListener("keydown", observerCallback());
+      // prompt.addEventListener("paste", observerCallback(), 0);
+
       console.log("Observation des changements du prompt démarrée !");
     } else {
       console.log("Aucun prompt trouvé");
+    }
+  }
+
+  async eventDetected(prompt) {
+    const dictionnary = await this.wordsManager.getWords();
+    this.checkEvent(prompt, dictionnary);
+  }
+
+  checkEvent(prompt, dictionnary) {
+    const content = prompt.target.innerHTML;
+    const isMatch = this.regexManager.CheckPrompt(dictionnary, content);
+
+    if (isMatch) {
+      if (this.lastContentFound != content) {
+        this.htmlManager.lockEnterKey();
+        this.htmlManager.highlightWord(dictionnary, content);
+        const btn = this.getSendButton();
+        if (btn) {
+          this.lockOrUnlockSendButton(isMatch);
+        }
+        this.lastContentFound = content;
+      }
+    } else {
+      this.htmlManager.unlockEnterKey();
+      this.htmlManager.updateMirrorText(content);
     }
   }
 
@@ -41,50 +61,6 @@ export default class WatcherManager {
   }
   async getWords() {
     return await this.wordsManager.getWords();
-  }
-
-  initObserver() {
-    return (mutations) => {
-      mutations.forEach(async (mutation) => {
-        if (
-          mutation.type === "childList" ||
-          mutation.type === "characterData"
-        ) {
-          const dictionnary = await this.wordsManager.getWords();
-          this.checkMutation(mutation, dictionnary);
-        }
-      });
-    };
-  }
-
-  checkMutation(mutation, dictionnary) {
-    const content = this.getTextMutation(mutation);
-    const isMatch = this.regexManager.CheckPrompt(dictionnary, content);
-    if (isMatch) {
-      if (this.lastContentFound != content) {
-        this.htmlManager.lockEnterKey();
-
-        const targetNode =
-          mutation.target.nodeType === Node.TEXT_NODE
-            ? mutation.target.parentElement
-            : mutation.target;
-
-        this.htmlManager.highlightWord(dictionnary, targetNode);
-
-        const btn = this.getSendButton();
-        if (btn) {
-          this.lockOrUnlockSendButton(isMatch);
-        }
-        this.lastContentFound = content;
-      }
-    } else {
-      this.htmlManager.unlockEnterKey();
-      this.htmlManager.updateMirrorText(mutation.target.textContent);
-    }
-  }
-
-  getTextMutation(mutation) {
-    return mutation.target.textContent;
   }
 
   lockOrUnlockSendButton(isMatch) {
