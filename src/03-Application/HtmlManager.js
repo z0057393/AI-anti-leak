@@ -108,21 +108,45 @@ export default class HtmlManager {
   }
 
   highlightWord(dictionnary, rootElement) {
+    // if (!(rootElement instanceof HTMLElement)) return;
+
+    // let html = rootElement.innerText;
+    // dictionnary.forEach((word) => {
+    //   const regex = new RegExp(`\\b(${word})\\b`, "gi");
+    //   html = html.replace(
+    //     regex,
+    //     `<span style="background-color:red; color: white;">$1</span>`
+    //   );
+    // });
+    // this.mirrorDiv.innerHTML = html;
+
     if (!(rootElement instanceof HTMLElement)) return;
 
-    let html = rootElement.innerText;
-    dictionnary.forEach((word) => {
-      const regex = new RegExp(`\\b(${word})\\b`, "gi");
-      html = html.replace(
-        regex,
-        `<span style="background-color:red; color: white;">$1</span>`
-      );
+    const text = rootElement.innerText;
+    const words = text.split(/\b/); // découpe par mots
+    this.mirrorDiv.innerHTML = ""; // vide le container
+
+    words.forEach((part) => {
+      const span = document.createElement("span");
+      if (
+        dictionnary.some((word) => word.toLowerCase() === part.toLowerCase())
+      ) {
+        span.style.backgroundColor = "red";
+        span.style.color = "white";
+      }
+      span.textContent = part;
+      this.mirrorDiv.appendChild(span);
     });
-    this.mirrorDiv.innerHTML = html;
   }
 
   updateMirrorText(html) {
-    this.mirrorDiv.innerHTML = html;
+    this.mirrorDiv.innerHTML = "";
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    doc.body.style.backgroundColor = "transparent"; // ou une couleur spécifique si tu veux
+
+    this.mirrorDiv.appendChild(doc.body);
   }
 
   lockEnterKey() {
