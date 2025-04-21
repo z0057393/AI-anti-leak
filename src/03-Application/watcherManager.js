@@ -17,9 +17,7 @@ export default class WatcherManager {
       this.htmlManager.createMirrorDiv(prompt);
 
       prompt.addEventListener("input", (event) => this.eventDetected(event));
-
-      // prompt.addEventListener("keydown", observerCallback());
-      // prompt.addEventListener("paste", observerCallback(), 0);
+      prompt.addEventListener("paste", (event) => this.eventDetected(event), 0);
 
       console.log("Observation des changements du prompt démarrée !");
     } else {
