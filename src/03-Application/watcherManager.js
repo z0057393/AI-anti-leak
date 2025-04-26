@@ -47,7 +47,7 @@ export default class WatcherManager {
       }
     } else {
       this.htmlManager.unlockEnterKey();
-      this.htmlManager.updateMirrorText(content);
+      this.htmlManager.updateMirrorText(prompt.target);
     }
   }
 
