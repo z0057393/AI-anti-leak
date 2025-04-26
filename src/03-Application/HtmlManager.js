@@ -40,6 +40,7 @@ export default class HtmlManager {
       "font-variant",
       "text-rendering",
     ];
+    this.styles = {};
   }
 
   getPrompt() {
@@ -79,20 +80,20 @@ export default class HtmlManager {
   createMirrorDiv(contentEditableElement) {
     const mirrorDiv = document.createElement("div");
 
-    const styles = {};
     const computedStyle = window.getComputedStyle(contentEditableElement);
 
     for (const prop of this.STYLES_IMPORTANTS) {
-      styles[prop] = computedStyle.getPropertyValue(prop);
+      this.styles[prop] = computedStyle.getPropertyValue(prop);
     }
-    this.applyStyles(mirrorDiv, styles, {
+    this.applyStyles(mirrorDiv, this.styles, {
       position: "absolute",
       "z-index": "-1",
       pointerEvents: "none",
       "user-select": "none",
       top:
         (
-          contentEditableElement.offsetTop - parseFloat(styles["margin-top"])
+          contentEditableElement.offsetTop -
+          parseFloat(this.styles["margin-top"])
         ).toString() + "px",
     });
     contentEditableElement.parentElement.appendChild(mirrorDiv);
@@ -145,13 +146,29 @@ export default class HtmlManager {
     this.mirrorDiv.appendChild(tempDiv);
   }
 
-  updateMirrorText(html) {
-    this.mirrorDiv.innerHTML = "";
+  updateMirrorText(elment) {
+    const html = elment.innerHTML;
 
+    const elRect = elment.getBoundingClientRect();
+    const parentRect = elment.parentElement.getBoundingClientRect();
+
+    const top =
+      elRect.top -
+      parentRect.top +
+      (elment.offsetTop -
+        parseFloat(this.styles["margin-top"]) -
+        parseFloat(this.styles["margin-top"]));
+
+    this.mirrorDiv.innerHTML = "";
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
     doc.body.style.backgroundColor = "transparent";
+    this.applyStyles(this.mirrorDiv, {
+      height: "auto",
+      top: top.toString() + "px",
+    });
 
+    this.mirrorDiv.scrollTop = this.mirrorDiv.scrollHeight;
     this.mirrorDiv.appendChild(doc.body);
   }
 
