@@ -1,7 +1,9 @@
 import browser from "webextension-polyfill";
+import IWordsRepository from "../../03-Application/Interface/IWordsRepository";
 
-export default class WordsManager {
+export default class WordsManager extends IWordsRepository {
   constructor() {
+    super();
     this.words = [];
     this.listenToStorageChanges();
   }
