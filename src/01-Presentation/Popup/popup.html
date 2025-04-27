@@ -6,24 +6,28 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
+    <div class="header">
+      <img src="icons/icon-128.png" />
+      <h1>AI Anti-Leak</h1>
+      <div></div>
+    </div>
     <div class="container">
-      <div class="header">
-        <h1>AI Anti-Leak</h1>
-      </div>
-      <div id="add-section">
-        <input id="inputMot" type="text" placeholder="Ajouter un mot..." />
-        <input class="button" id="add" type="button" value="+" />
-        <input class="button" id="remove" type="button" value="-" />
-      </div>
-      <div class="banned-words">
-        <div class="header">
-          <h2>Banned words</h2>
+      <div class="section">
+        <div class="mode-selection">
+          <div id="watch" class="mode active">Watch Mode</div>
+          <div id="anonymise" class="mode">Anonymiser Mode</div>
         </div>
-
-        <ul id="listeMots"></ul>
+      </div>
+      <div class="section">
+        <div class="word-input">
+          <input id="add-text" type="text" placeholder="Add a word..." />
+          <input id="add-button" type="button" value="+" />
+        </div>
+      </div>
+      <div class="section-words">
+        <div id="word-list" class="word-list"></div>
       </div>
     </div>
-
     <script type="module" src="bundle-popup.js"></script>
   </body>
 </html>
