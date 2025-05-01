@@ -8,6 +8,7 @@ export default class ListenerManager {
 
   async listen() {
     const llm = await this._LlmProviderManager.Get();
+    this._HtmlManager.validate(llm);
     this._HtmlManager.createMirrorDiv(llm.prompt);
     this._initListerners(llm);
   }
