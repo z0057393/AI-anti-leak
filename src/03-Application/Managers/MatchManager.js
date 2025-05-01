@@ -1,13 +1,22 @@
 export default class MatchManager {
-  constructor(wordsManager, htmlManager, buttonManager, llmProviderManager) {
-    this._WordsManager = wordsManager;
+  constructor(
+    storageRepository,
+    htmlManager,
+    buttonManager,
+    llmProviderManager
+  ) {
+    this._storageRepository = storageRepository;
     this._HtmlManager = htmlManager;
     this._ButtonManager = buttonManager;
     this._LlmProviderManager = llmProviderManager;
   }
 
   async controle(llm) {
-    const words = await this._WordsManager.getWords();
+    const state = await this._storageRepository.getState();
+    console.log(state);
+    if (state == 0) return;
+
+    const words = await this._storageRepository.getWords();
     const isMatch = this._checkPrompt(words, llm.prompt.innerHTML);
     this._HtmlManager.updateMirrorText(llm.prompt);
 
