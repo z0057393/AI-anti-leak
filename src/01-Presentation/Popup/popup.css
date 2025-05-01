@@ -92,7 +92,7 @@ body {
   width: 100vw;
   max-height: 50vh;
   position: relative;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .word-list {
