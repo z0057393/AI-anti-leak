@@ -44,8 +44,8 @@ This project was created to bring more user control, data awareness, and safety 
 
 You can install the AI Anti-Leak by clicking on this link
 
-- Firefox : URL TO FIREFOX
-- Chrome : URL TO CHROME
+- Firefox : [AI Anti-Leak](https://addons.mozilla.org/fr/firefox/addon/ai-anti-leak/)
+- Chrome : [AI Anti-Leak](https://chromewebstore.google.com/detail/ai-anti-leak/abbillpanchadklmofpjbgkjcmaljjfo?hl=fr)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -65,7 +65,7 @@ You can install the AI Anti-Leak by clicking on this link
 | Browser   | Supported | Status      |
 | --------- | --------- | ----------- |
 | ChatGPT   | ✅        | Supported   |
-| MistralAI | ❌        | Coming soon |
+| MistralAI | ✅        | Supported   |
 | Deapseek  | ❌        | Coming soon |
 | Claude    | ❌        | Coming soon |
 | Gemini    | ❌        | Coming soon |
