@@ -1,5 +1,6 @@
 import ILlmRepository from "../../03-Application/Interface/ILlmRepository";
 import ChatGPTManager from "../Managers/chatGPTManager";
+import MistralManager from "../Managers/MistralManager";
 
 export default class LlmRepository extends ILlmRepository {
   constructor() {
@@ -10,6 +11,8 @@ export default class LlmRepository extends ILlmRepository {
     switch (true) {
       case this._urlContains("chatgpt"):
         return new ChatGPTManager().getButton();
+      case this._urlContains("mistral"):
+        return new MistralManager().getButton();
       default:
         throw new Error("IA non géré");
     }
@@ -44,6 +47,8 @@ export default class LlmRepository extends ILlmRepository {
     switch (true) {
       case this._urlContains("chatgpt"):
         return new ChatGPTManager().getPrompt();
+      case this._urlContains("mistral"):
+        return new MistralManager().getPrompt();
       default:
         throw new Error("IA non géré");
     }

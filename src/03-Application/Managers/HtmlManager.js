@@ -27,7 +27,6 @@ export default class HtmlManager {
       "box-shadow",
       "background",
       "background-color",
-      "z-index",
       "visibility",
       "opacity",
       "overflow",
@@ -37,6 +36,7 @@ export default class HtmlManager {
       "font-feature-settings",
       "font-variant",
       "text-rendering",
+      "pointer-events",
     ];
     this.styles = {};
   }
@@ -51,8 +51,7 @@ export default class HtmlManager {
     }
     this.applyStyles(mirrorDiv, this.styles, {
       position: "absolute",
-      "z-index": "-1",
-      pointerEvents: "none",
+      "pointer-events": "none",
       "user-select": "none",
       top:
         (
@@ -111,8 +110,10 @@ export default class HtmlManager {
   }
 
   updateMirrorText(elment) {
-    const html = elment.innerHTML;
-
+    let html = elment.innerHTML;
+    if (html === "") {
+      html = elment.value;
+    }
     const elRect = elment.getBoundingClientRect();
     const parentRect = elment.parentElement.getBoundingClientRect();
 
