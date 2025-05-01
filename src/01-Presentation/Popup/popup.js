@@ -7,11 +7,7 @@ if (typeof browser !== "undefined" && browser.storage) {
   const addText = document.getElementById("add-text");
   const wordList = document.getElementById("word-list");
 
-  console.log(addButton);
-  console.log(addText);
-
   function afficherMots(mots) {
-    console.log("wordlist", wordList);
     wordList.innerHTML = "";
 
     mots.forEach((mot) => {
@@ -97,6 +93,26 @@ if (typeof browser !== "undefined" && browser.storage) {
       }
     });
   }
+
+  const toggle = document.getElementById("toggle-extension");
+
+  // Initialiser l'état au chargement
+  browser.storage.local.get("AIAL-State").then((result) => {
+    if (result["AIAL-State"] === undefined) {
+      // Valeur par défaut = 1 (activé)
+      browser.storage.local.set({ "AIAL-State": 1 });
+      toggle.checked = true;
+    } else {
+      const isActive = result["AIAL-State"] === 1;
+      toggle.checked = isActive;
+    }
+  });
+
+  // Mettre à jour AIAL-State lors du changement
+  toggle.addEventListener("change", () => {
+    const newState = toggle.checked ? 1 : 0;
+    browser.storage.local.set({ "AIAL-State": newState });
+  });
 } else {
   console.error("❌ browser.storage est inaccessible");
 }
