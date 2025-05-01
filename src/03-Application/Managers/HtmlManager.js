@@ -152,4 +152,17 @@ export default class HtmlManager {
     document.removeEventListener("keydown", this.enterKeyListener, true);
     this.enterKeyListener = null;
   }
+
+  validate(llm) {
+    const topBar = document.createElement("div");
+    topBar.style.position = "absolute";
+    topBar.style.top = "0";
+    topBar.style.left = "0";
+    topBar.style.width = "100%";
+    topBar.style.height = "2px";
+    topBar.style.backgroundColor = "green";
+    topBar.style.zIndex = "9999";
+
+    document.body.appendChild(topBar);
+  }
 }
