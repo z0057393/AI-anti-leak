@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <meta charset="utf-8" />
@@ -16,6 +15,7 @@
         </label>
       </div>
     </div>
+
     <div class="container">
       <div class="section">
         <div class="mode-selection">
@@ -23,16 +23,31 @@
           <div id="anonymise" class="mode">Anonymiser Mode</div>
         </div>
       </div>
+
       <div class="section">
         <div class="word-input">
           <input id="add-text" type="text" placeholder="Add a word..." />
           <input id="add-button" type="button" value="+" />
         </div>
       </div>
+
       <div class="section-words">
         <div id="word-list" class="word-list"></div>
       </div>
+
+      <div class="section-table" style="display: none">
+        <table>
+          <thead>
+            <tr>
+              <th>Original</th>
+              <th>Anonymised</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
     </div>
+
     <script type="module" src="bundle-popup.js"></script>
   </body>
 </html>
