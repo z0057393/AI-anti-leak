@@ -5,4 +5,12 @@ export default class IStorageRepository {
   listenToStorageChanges() {
     throw new Error("Method not implemented.");
   }
+
+  async getMode() {
+    throw new Error("Method not implemented.");
+  }
+
+  async getState() {
+    throw new Error("Method not implemented.");
+  }
 }

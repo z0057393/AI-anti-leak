@@ -88,6 +88,7 @@ if (typeof browser !== "undefined" && browser.storage) {
 
   const toggle = document.getElementById("toggle-extension");
 
+  // Récupère l'état de l'extension pour savoir si c'est le mode "anonymise" ou "watch"
   browser.storage.local.get("AIAL-State").then((result) => {
     if (result["AIAL-State"] === undefined) {
       browser.storage.local.set({ "AIAL-State": 1 });
@@ -95,6 +96,21 @@ if (typeof browser !== "undefined" && browser.storage) {
     } else {
       const isActive = result["AIAL-State"] === 1;
       toggle.checked = isActive;
+    }
+
+    // Charge le mode par défaut en fonction de l'état
+    if (toggle.checked) {
+      // Si AIAL-State est à 1, on charge le mode anonymisé
+      anonymiseTab.classList.add("active");
+      watchTab.classList.remove("active");
+      sectionWords.style.display = "none";
+      sectionTable.style.display = "block";
+    } else {
+      // Si AIAL-State est à 0, on charge le mode watch
+      anonymiseTab.classList.remove("active");
+      watchTab.classList.add("active");
+      sectionWords.style.display = "block";
+      sectionTable.style.display = "none";
     }
   });
 
@@ -109,18 +125,24 @@ if (typeof browser !== "undefined" && browser.storage) {
   const sectionTable = document.querySelector(".section-table");
   const tableBody = document.getElementById("table-body");
 
+  // Passage au mode "watch"
   watchTab.addEventListener("click", () => {
     watchTab.classList.add("active");
     anonymiseTab.classList.remove("active");
     sectionWords.style.display = "block";
     sectionTable.style.display = "none";
+
+    browser.storage.local.set({ "AIAL-IsAnonymisedMode": false });
   });
 
+  // Passage au mode "anonymise"
   anonymiseTab.addEventListener("click", () => {
     watchTab.classList.remove("active");
     anonymiseTab.classList.add("active");
     sectionWords.style.display = "none";
     sectionTable.style.display = "block";
+
+    browser.storage.local.set({ "AIAL-IsAnonymisedMode": true });
 
     tableBody.innerHTML = "";
 
