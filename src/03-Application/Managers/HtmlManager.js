@@ -166,4 +166,38 @@ export default class HtmlManager {
 
     document.body.appendChild(topBar);
   }
+
+  anonymise(llm, anonymisedWords) {
+    console.log(anonymisedWords);
+    const promptElement = llm.prompt;
+
+    if (!promptElement || !promptElement.textContent) {
+      console.error("Élément prompt invalide :", promptElement);
+      return;
+    }
+
+    const text = promptElement.textContent;
+    const words = text.split(/(\b)/); // \b = délimiteur de mot
+
+    const replaced = words
+      .map((word) => {
+        // Cherche une correspondance insensible à la casse
+        const key = Object.keys(anonymisedWords).find(
+          (original) => original.toLowerCase() === word.toLowerCase()
+        );
+        return key ? anonymisedWords[key] : word;
+      })
+      .join("");
+
+    // Remplace le texte
+    promptElement.textContent = replaced;
+
+    // Repositionne le curseur à la fin
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(promptElement);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 }

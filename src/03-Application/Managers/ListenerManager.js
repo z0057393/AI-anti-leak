@@ -6,16 +6,28 @@ export default class ListenerManager {
     this.lastContentFound = "";
   }
 
-  async listen() {
+  async startWatchMode() {
     const llm = await this._LlmProviderManager.Get();
     this._HtmlManager.validate(llm);
     this._HtmlManager.createMirrorDiv(llm.prompt);
-    this._initListerners(llm);
+    this._initWatchListerners(llm);
   }
 
-  _initListerners(llm) {
+  async startAnonymisedMode() {
+    const llm = await this._LlmProviderManager.Get();
+    this._HtmlManager.validate(llm);
+    this._initAnonymiserListerners(llm);
+  }
+
+  _initWatchListerners(llm) {
     llm.prompt.addEventListener("keydown", () =>
-      this._MatchManager.controle(llm)
+      this._MatchManager.controleInWatchMode(llm)
+    );
+  }
+
+  _initAnonymiserListerners(llm) {
+    llm.prompt.addEventListener("keydown", () =>
+      this._MatchManager.controleInAnonymiserMode(llm)
     );
   }
 }

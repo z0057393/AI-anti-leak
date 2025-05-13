@@ -1,6 +1,6 @@
 //Import Services
 
-import ListenerService from "../03-Application/Services/ListenerService.js";
+import ModeService from "../03-Application/Services/ModeService.js";
 
 //Import Managers
 
@@ -11,6 +11,7 @@ import HtmlManager from "../03-Application/Managers/HtmlManager.js";
 import LlmProviderManager from "../03-Application/Managers/LlmProviderManager.js";
 import ListenerManager from "../03-Application/Managers/ListenerManager.js";
 import ButtonManager from "../03-Application/Managers/ButtonManager.js";
+import ModeManager from "../03-Application/Managers/ModeManager.js";
 
 //Init Dependency
 const llmRepository = new LlmRepository();
@@ -29,11 +30,12 @@ const listenerManager = new ListenerManager(
   llmProviderManager,
   matchManager
 );
+const modeManager = new ModeManager(listenerManager, storageRepository);
 
-const listenerService = new ListenerService(listenerManager);
+const modeService = new ModeService(modeManager);
 
 //Start
-listenerService.listen();
+modeService.initialize();
 
 let lastUrl = window.location.href;
 
