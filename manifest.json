@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI Anti-Leak",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "AI Anti-Leak is a privacy-focused web extension designed to protect users from submiting sensitive information to LLMs",
   "browser_specific_settings": {
     "gecko": {
