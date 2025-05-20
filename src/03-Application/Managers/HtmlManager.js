@@ -27,7 +27,6 @@ export default class HtmlManager {
       "box-shadow",
       "background",
       "background-color",
-      "z-index",
       "visibility",
       "opacity",
       "overflow",
@@ -37,8 +36,18 @@ export default class HtmlManager {
       "font-feature-settings",
       "font-variant",
       "text-rendering",
+      "pointer-events",
     ];
     this.styles = {};
+  }
+
+  removeMirrorDiv() {
+    console.log("MirrorDiv", this.mirrorDiv);
+    if (this.mirrorDiv == null) return;
+    if (this.mirrorDiv && this.mirrorDiv.parentElement) {
+      this.mirrorDiv.parentElement.removeChild(this.mirrorDiv);
+      this.mirrorDiv = null;
+    }
   }
 
   createMirrorDiv(contentEditableElement) {
@@ -51,8 +60,7 @@ export default class HtmlManager {
     }
     this.applyStyles(mirrorDiv, this.styles, {
       position: "absolute",
-      "z-index": "-1",
-      pointerEvents: "none",
+      "pointer-events": "none",
       "user-select": "none",
       top:
         (
@@ -111,8 +119,10 @@ export default class HtmlManager {
   }
 
   updateMirrorText(elment) {
-    const html = elment.innerHTML;
-
+    let html = elment.innerHTML;
+    if (html === "") {
+      html = elment.value;
+    }
     const elRect = elment.getBoundingClientRect();
     const parentRect = elment.parentElement.getBoundingClientRect();
 
@@ -151,5 +161,52 @@ export default class HtmlManager {
     if (this.enterKeyListener == null) return;
     document.removeEventListener("keydown", this.enterKeyListener, true);
     this.enterKeyListener = null;
+  }
+
+  validate(llm) {
+    const topBar = document.createElement("div");
+    topBar.style.position = "absolute";
+    topBar.style.top = "0";
+    topBar.style.left = "0";
+    topBar.style.width = "100%";
+    topBar.style.height = "2px";
+    topBar.style.backgroundColor = "green";
+    topBar.style.zIndex = "9999";
+
+    document.body.appendChild(topBar);
+  }
+
+  anonymise(llm, anonymisedWords) {
+    console.log(anonymisedWords);
+    const promptElement = llm.prompt;
+
+    if (!promptElement || !promptElement.textContent) {
+      console.error("Élément prompt invalide :", promptElement);
+      return;
+    }
+
+    const text = promptElement.textContent;
+    const words = text.split(/(\b)/); // \b = délimiteur de mot
+
+    const replaced = words
+      .map((word) => {
+        // Cherche une correspondance insensible à la casse
+        const key = Object.keys(anonymisedWords).find(
+          (original) => original.toLowerCase() === word.toLowerCase()
+        );
+        return key ? anonymisedWords[key] : word;
+      })
+      .join("");
+
+    // Remplace le texte
+    promptElement.textContent = replaced;
+
+    // Repositionne le curseur à la fin
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(promptElement);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 }

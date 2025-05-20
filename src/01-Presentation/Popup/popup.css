@@ -15,6 +15,7 @@ body {
   padding-inline: 5vw;
   gap: 5vw;
   align-items: center;
+  position: relative;
 }
 
 .header img {
@@ -24,6 +25,56 @@ body {
 
 .header h1 {
   font-size: 1.5em;
+}
+
+.header .toggle-button {
+  position: absolute;
+  right: 5vw;
+}
+
+.header .toggle-button .toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.header .toggle-button .toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.header .toggle-button .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.header .toggle-button .slider::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.header .toggle-button input:checked + .slider {
+  background-color: #4caf50;
+}
+
+.header .toggle-button input:checked + .slider::before {
+  transform: translateX(24px);
 }
 
 .container {
@@ -92,7 +143,7 @@ body {
   width: 100vw;
   max-height: 50vh;
   position: relative;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .word-list {
@@ -107,4 +158,25 @@ body {
   background-color: #f1f0f0;
   padding: 0.5em;
   border-radius: 10vw;
+}
+
+table {
+  width: 60%;
+  margin: 30px auto;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+.section-table input[type="text"] {
+  width: 95%;
+  padding: 5px;
+  font-size: 1em;
+}
+th {
+  background-color: #f2f2f2;
 }
