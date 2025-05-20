@@ -41,6 +41,15 @@ export default class HtmlManager {
     this.styles = {};
   }
 
+  removeMirrorDiv() {
+    console.log("MirrorDiv", this.mirrorDiv);
+    if (this.mirrorDiv == null) return;
+    if (this.mirrorDiv && this.mirrorDiv.parentElement) {
+      this.mirrorDiv.parentElement.removeChild(this.mirrorDiv);
+      this.mirrorDiv = null;
+    }
+  }
+
   createMirrorDiv(contentEditableElement) {
     const mirrorDiv = document.createElement("div");
 

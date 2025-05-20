@@ -5,9 +5,26 @@ export default class ModeManager {
   }
 
   async initialize() {
-    const isAnonymisedMode = this._storageRepository.getMode();
+    let lastMode = await this._storageRepository.getMode();
 
-    if (!isAnonymisedMode) await this._listenerManager.startWatchMode();
-    await this._listenerManager.startAnonymisedMode();
+    const init = async () => {
+      const isAnonymisedMode = await this._storageRepository.getMode();
+
+      if (isAnonymisedMode) {
+        await this._listenerManager.startAnonymisedMode();
+      } else {
+        await this._listenerManager.startWatchMode();
+      }
+    };
+
+    await init();
+
+    setInterval(async () => {
+      const currentMode = await this._storageRepository.getMode();
+      if (currentMode != lastMode) {
+        lastMode = currentMode;
+        await init();
+      }
+    }, 1000);
   }
 }

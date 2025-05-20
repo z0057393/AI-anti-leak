@@ -7,6 +7,13 @@ if (typeof browser !== "undefined" && browser.storage) {
   const addText = document.getElementById("add-text");
   const wordList = document.getElementById("word-list");
 
+  const watchTab = document.getElementById("watch");
+  const anonymiseTab = document.getElementById("anonymise");
+  const sectionWords = document.querySelector(".section-words");
+  const sectionTable = document.querySelector(".section-table");
+  const tableBody = document.getElementById("table-body");
+  const toggle = document.getElementById("toggle-extension");
+
   function afficherMots(mots) {
     wordList.innerHTML = "";
 
@@ -55,95 +62,7 @@ if (typeof browser !== "undefined" && browser.storage) {
     });
   }
 
-  document.addEventListener("click", () => {
-    resetWords();
-  });
-
-  browser.storage.local.get("motsInterdits").then((result) => {
-    const mots = result.motsInterdits || [];
-    afficherMots(mots);
-  });
-
-  if (addButton && addText) {
-    addButton.addEventListener("click", () => {
-      const mot = addText.value.trim();
-
-      if (mot) {
-        browser.storage.local.get("motsInterdits").then((result) => {
-          const anciensMots = result.motsInterdits || [];
-          const nouveauxMots = [...anciensMots, mot];
-
-          browser.storage.local
-            .set({ motsInterdits: nouveauxMots })
-            .then(() => {
-              afficherMots(nouveauxMots);
-              addText.value = "";
-            });
-        });
-      } else {
-        console.warn("⛔ Aucun mot saisi !");
-      }
-    });
-  }
-
-  const toggle = document.getElementById("toggle-extension");
-
-  // Récupère l'état de l'extension pour savoir si c'est le mode "anonymise" ou "watch"
-  browser.storage.local.get("AIAL-State").then((result) => {
-    if (result["AIAL-State"] === undefined) {
-      browser.storage.local.set({ "AIAL-State": 1 });
-      toggle.checked = true;
-    } else {
-      const isActive = result["AIAL-State"] === 1;
-      toggle.checked = isActive;
-    }
-
-    // Charge le mode par défaut en fonction de l'état
-    if (toggle.checked) {
-      // Si AIAL-State est à 1, on charge le mode anonymisé
-      anonymiseTab.classList.add("active");
-      watchTab.classList.remove("active");
-      sectionWords.style.display = "none";
-      sectionTable.style.display = "block";
-    } else {
-      // Si AIAL-State est à 0, on charge le mode watch
-      anonymiseTab.classList.remove("active");
-      watchTab.classList.add("active");
-      sectionWords.style.display = "block";
-      sectionTable.style.display = "none";
-    }
-  });
-
-  toggle.addEventListener("change", () => {
-    const newState = toggle.checked ? 1 : 0;
-    browser.storage.local.set({ "AIAL-State": newState });
-  });
-
-  const watchTab = document.getElementById("watch");
-  const anonymiseTab = document.getElementById("anonymise");
-  const sectionWords = document.querySelector(".section-words");
-  const sectionTable = document.querySelector(".section-table");
-  const tableBody = document.getElementById("table-body");
-
-  // Passage au mode "watch"
-  watchTab.addEventListener("click", () => {
-    watchTab.classList.add("active");
-    anonymiseTab.classList.remove("active");
-    sectionWords.style.display = "block";
-    sectionTable.style.display = "none";
-
-    browser.storage.local.set({ "AIAL-IsAnonymisedMode": false });
-  });
-
-  // Passage au mode "anonymise"
-  anonymiseTab.addEventListener("click", () => {
-    watchTab.classList.remove("active");
-    anonymiseTab.classList.add("active");
-    sectionWords.style.display = "none";
-    sectionTable.style.display = "block";
-
-    browser.storage.local.set({ "AIAL-IsAnonymisedMode": true });
-
+  function chargerTableAnonymisation() {
     tableBody.innerHTML = "";
 
     Promise.all([
@@ -198,6 +117,88 @@ if (typeof browser !== "undefined" && browser.storage) {
         tableBody.appendChild(row);
       });
     });
+  }
+
+  document.addEventListener("click", () => {
+    resetWords();
+  });
+
+  browser.storage.local.get("motsInterdits").then((result) => {
+    const mots = result.motsInterdits || [];
+    afficherMots(mots);
+  });
+
+  if (addButton && addText) {
+    addButton.addEventListener("click", () => {
+      const mot = addText.value.trim();
+
+      if (mot) {
+        browser.storage.local.get("motsInterdits").then((result) => {
+          const anciensMots = result.motsInterdits || [];
+          const nouveauxMots = [...anciensMots, mot];
+
+          browser.storage.local
+            .set({ motsInterdits: nouveauxMots })
+            .then(() => {
+              afficherMots(nouveauxMots);
+              addText.value = "";
+            });
+        });
+      } else {
+        console.warn("⛔ Aucun mot saisi !");
+      }
+    });
+  }
+
+  // Initialisation du toggle (AIAL-State = extension active ou non)
+  browser.storage.local.get("AIAL-State").then((result) => {
+    const isEnabled = result["AIAL-State"] === true;
+    toggle.checked = isEnabled;
+  });
+
+  // Toggle modifie AIAL-State
+  toggle.addEventListener("change", () => {
+    const newState = toggle.checked;
+    browser.storage.local.set({ "AIAL-State": newState });
+  });
+
+  // Initialisation de l'onglet selon AIAL-IsAnonymisedMode
+  browser.storage.local.get("AIAL-IsAnonymisedMode").then((result) => {
+    const isAnonymised = result["AIAL-IsAnonymisedMode"] === true;
+
+    toggle.checked = true; // ← Optionnel, à synchroniser selon AIAL-State si besoin
+
+    if (isAnonymised) {
+      anonymiseTab.classList.add("active");
+      watchTab.classList.remove("active");
+      sectionWords.style.display = "none";
+      sectionTable.style.display = "block";
+      chargerTableAnonymisation();
+    } else {
+      anonymiseTab.classList.remove("active");
+      watchTab.classList.add("active");
+      sectionWords.style.display = "block";
+      sectionTable.style.display = "none";
+    }
+  });
+
+  watchTab.addEventListener("click", () => {
+    watchTab.classList.add("active");
+    anonymiseTab.classList.remove("active");
+    sectionWords.style.display = "block";
+    sectionTable.style.display = "none";
+
+    browser.storage.local.set({ "AIAL-IsAnonymisedMode": false });
+  });
+
+  anonymiseTab.addEventListener("click", () => {
+    watchTab.classList.remove("active");
+    anonymiseTab.classList.add("active");
+    sectionWords.style.display = "none";
+    sectionTable.style.display = "block";
+
+    browser.storage.local.set({ "AIAL-IsAnonymisedMode": true });
+    chargerTableAnonymisation();
   });
 } else {
   console.error("❌ browser.storage est inaccessible");

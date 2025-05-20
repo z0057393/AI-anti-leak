@@ -34,7 +34,6 @@ export default class MatchManager {
       this._HtmlManager.unlockEnterKey();
       return;
     }
-    //Anonymiser
     this._HtmlManager.anonymise(llm, anonymisedWords.anonymised);
   }
 
