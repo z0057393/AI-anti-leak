@@ -26,7 +26,11 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://chatgpt.com/*", "https://chat.mistral.ai/*"],
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.mistral.ai/*",
+        "https://chat.deepseek.com/*"
+      ],
       "js": ["bundle-content.js"],
       "run_at": "document_start"
     }
