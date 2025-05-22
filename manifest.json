@@ -29,7 +29,8 @@
       "matches": [
         "https://chatgpt.com/*",
         "https://chat.mistral.ai/*",
-        "https://chat.deepseek.com/*"
+        "https://chat.deepseek.com/*",
+        "https://gemini.google.com/*"
       ],
       "js": ["bundle-content.js"],
       "run_at": "document_start"

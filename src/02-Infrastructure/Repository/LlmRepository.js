@@ -2,6 +2,7 @@ import ILlmRepository from "../../03-Application/Interface/ILlmRepository";
 import ChatGPTManager from "../Managers/chatGPTManager";
 import MistralManager from "../Managers/MistralManager";
 import deepseekManager from "../Managers/deepseekManager";
+import geminiManager from "../Managers/geminiManager";
 
 export default class LlmRepository extends ILlmRepository {
   constructor() {
@@ -16,6 +17,8 @@ export default class LlmRepository extends ILlmRepository {
         return new MistralManager().getButton();
       case this._urlContains("deepseek"):
         return new deepseekManager().getButton();
+      case this._urlContains("gemini"):
+        return new geminiManager().getButton();
       default:
         throw new Error("IA non géré");
     }
@@ -54,6 +57,8 @@ export default class LlmRepository extends ILlmRepository {
         return new MistralManager().getPrompt();
       case this._urlContains("deepseek"):
         return new deepseekManager().getPrompt();
+      case this._urlContains("gemini"):
+        return new geminiManager().getPrompt();
       default:
         throw new Error("IA non géré");
     }
