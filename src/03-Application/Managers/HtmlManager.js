@@ -177,20 +177,24 @@ export default class HtmlManager {
   }
 
   anonymise(llm, anonymisedWords) {
-    console.log(anonymisedWords);
+    console.log("anonymisedWords : ", anonymisedWords);
     const promptElement = llm.prompt;
 
-    if (!promptElement || !promptElement.textContent) {
+    console.log("Value : ", promptElement.value);
+    let text = "";
+
+    if (promptElement.textContent) text = promptElement.textContent;
+    if (promptElement.value) text = promptElement.value;
+
+    if (!promptElement) {
       console.error("Élément prompt invalide :", promptElement);
       return;
     }
 
-    const text = promptElement.textContent;
-    const words = text.split(/(\b)/); // \b = délimiteur de mot
+    const words = text.split(/(\b)/);
 
     const replaced = words
       .map((word) => {
-        // Cherche une correspondance insensible à la casse
         const key = Object.keys(anonymisedWords).find(
           (original) => original.toLowerCase() === word.toLowerCase()
         );
@@ -198,10 +202,9 @@ export default class HtmlManager {
       })
       .join("");
 
-    // Remplace le texte
-    promptElement.textContent = replaced;
+    if (promptElement.textContent) promptElement.textContent = replaced;
+    if (promptElement.value) promptElement.value = replaced;
 
-    // Repositionne le curseur à la fin
     const range = document.createRange();
     const sel = window.getSelection();
     range.selectNodeContents(promptElement);
