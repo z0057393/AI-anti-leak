@@ -62,13 +62,13 @@ You can install the AI Anti-Leak by clicking on this link
 
 ## LLMs Compatibility
 
-| Browser   | Supported | Status      |
-| --------- | --------- | ----------- |
-| ChatGPT   | ✅        | Supported   |
-| MistralAI | ✅        | Supported   |
-| Deapseek  | ❌        | Coming soon |
-| Claude    | ❌        | Coming soon |
-| Gemini    | ❌        | Coming soon |
+| Browser   | Supported | Status    |
+| --------- | --------- | --------- |
+| ChatGPT   | ✅        | Supported |
+| MistralAI | ✅        | Supported |
+| Deapseek  | ✅        | Supported |
+| Claude    | ✅        | Supported |
+| Gemini    | ✅        | Supported |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
