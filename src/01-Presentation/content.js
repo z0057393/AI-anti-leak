@@ -30,20 +30,9 @@ const listenerManager = new ListenerManager(
   llmProviderManager,
   matchManager
 );
-const modeManager = new ModeManager(listenerManager, storageRepository);
+const modeManager = new ModeManager(listenerManager);
 
 const modeService = new ModeService(modeManager);
 
 //Start
 modeService.initialize();
-
-let lastUrl = window.location.href;
-
-setInterval(() => {
-  const currentUrl = window.location.href;
-
-  if (currentUrl !== lastUrl) {
-    lastUrl = currentUrl;
-    listenerService.listen();
-  }
-}, 500);

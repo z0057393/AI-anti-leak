@@ -11,12 +11,8 @@ export default class MatchManager {
     this._LlmProviderManager = llmProviderManager;
   }
 
-  async controleInAnonymiserMode(llm) {
-    const state = await this._storageRepository.getState();
-    console.log(state);
-    if (state == 0) return;
-
-    let text = llm.prompt.innerHTML;
+  async controleInAnonymiserMode(llm, inputkey) {
+    let text = llm.prompt.innerText + inputkey;
 
     if (text === "") {
       text = llm.prompt.value;
@@ -37,36 +33,13 @@ export default class MatchManager {
     this._HtmlManager.anonymise(llm, anonymisedWords.anonymised);
   }
 
-  async controleInWatchMode(llm) {
-    const state = await this._storageRepository.getState();
-    if (state == 0) return;
-
-    let text = llm.prompt.innerHTML;
-
-    if (text === "") {
-      text = llm.prompt.value;
-    }
-
-    const words = await this._storageRepository.getWords();
-    const isMatch = this._checkPrompt(words, text);
-    this._HtmlManager.updateMirrorText(llm.prompt);
-
-    if (!llm.button.element.isConnected) {
-      llm = await this._LlmProviderManager.reload();
-    }
-    if (!isMatch) {
-      this._ButtonManager.unlock(llm.button);
-      this._HtmlManager.unlockEnterKey();
-      return;
-    }
-    this._ButtonManager.lock(llm.button);
-    this._HtmlManager.lockEnterKey();
-    this._HtmlManager.highlightWord(words, text);
+  _escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
-  _checkPrompt(dictionnary, inputPrompt) {
-    return dictionnary.some((word) => {
-      const regex = new RegExp("\\b" + word + "\\b", "i");
+  _checkPrompt(dictionary, inputPrompt) {
+    return dictionary.some((word) => {
+      const regex = new RegExp(this._escapeRegex(word), "i"); // match partiel, insensible à la casse
       return regex.test(inputPrompt);
     });
   }

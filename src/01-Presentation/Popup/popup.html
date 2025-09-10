@@ -8,21 +8,9 @@
     <div class="header">
       <img src="icons/icon-128.png" />
       <h1>AI Anti-Leak</h1>
-      <div class="toggle-button">
-        <label class="toggle-switch">
-          <input type="checkbox" id="toggle-extension" />
-          <span class="slider"></span>
-        </label>
-      </div>
     </div>
 
     <div class="container">
-      <div class="section">
-        <div class="mode-selection">
-          <div id="watch" class="mode active">Watch Mode</div>
-          <div id="anonymise" class="mode">Anonymiser Mode</div>
-        </div>
-      </div>
 
       <div class="section">
         <div class="word-input">
@@ -31,16 +19,13 @@
         </div>
       </div>
 
-      <div class="section-words">
-        <div id="word-list" class="word-list"></div>
-      </div>
-
-      <div class="section-table" style="display: none">
+      <div class="section-table">
         <table>
           <thead>
             <tr>
               <th>Original</th>
               <th>Anonymised</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody id="table-body"></tbody>

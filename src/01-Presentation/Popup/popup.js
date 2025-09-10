@@ -5,62 +5,7 @@ if (typeof browser !== "undefined" && browser.storage) {
 
   const addButton = document.getElementById("add-button");
   const addText = document.getElementById("add-text");
-  const wordList = document.getElementById("word-list");
-
-  const watchTab = document.getElementById("watch");
-  const anonymiseTab = document.getElementById("anonymise");
-  const sectionWords = document.querySelector(".section-words");
-  const sectionTable = document.querySelector(".section-table");
   const tableBody = document.getElementById("table-body");
-  const toggle = document.getElementById("toggle-extension");
-
-  function afficherMots(mots) {
-    wordList.innerHTML = "";
-
-    mots.forEach((mot) => {
-      const div = document.createElement("div");
-      div.classList.add("word");
-      div.textContent = mot;
-
-      div.dataset.originalText = mot;
-      div.dataset.state = "default";
-
-      div.addEventListener("click", (e) => {
-        e.stopPropagation();
-
-        if (div.dataset.state === "active") {
-          div.remove();
-
-          browser.storage.local.get("motsInterdits").then((result) => {
-            const anciensMots = result.motsInterdits || [];
-            const nouveauxMots = anciensMots.filter(
-              (m) => m !== div.dataset.originalText
-            );
-            browser.storage.local.set({ motsInterdits: nouveauxMots });
-          });
-
-          return;
-        }
-
-        resetWords();
-        div.style.backgroundColor = "red";
-        div.textContent = "🗑️";
-        div.dataset.state = "active";
-      });
-
-      wordList.appendChild(div);
-    });
-  }
-
-  function resetWords() {
-    document.querySelectorAll(".word").forEach((word) => {
-      if (word.dataset.originalText) {
-        word.style.backgroundColor = "";
-        word.textContent = word.dataset.originalText;
-        word.dataset.state = "default";
-      }
-    });
-  }
 
   function chargerTableAnonymisation() {
     tableBody.innerHTML = "";
@@ -111,22 +56,32 @@ if (typeof browser !== "undefined" && browser.storage) {
           });
         });
 
+        // Add delete button
+        const tdDelete = document.createElement("td");
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "🗑️";
+        deleteBtn.style.cursor = "pointer";
+        deleteBtn.addEventListener("click", () => {
+          browser.storage.local.get("motsInterdits").then((result) => {
+            const anciensMots = result.motsInterdits || [];
+            const nouveauxMots = anciensMots.filter((m) => m !== mot.original);
+            browser.storage.local
+              .set({ motsInterdits: nouveauxMots })
+              .then(() => {
+                chargerTableAnonymisation(); // Reload the table
+              });
+          });
+        });
+
         tdModifiable.appendChild(input);
+        tdDelete.appendChild(deleteBtn);
         row.appendChild(tdOriginal);
         row.appendChild(tdModifiable);
+        row.appendChild(tdDelete);
         tableBody.appendChild(row);
       });
     });
   }
-
-  document.addEventListener("click", () => {
-    resetWords();
-  });
-
-  browser.storage.local.get("motsInterdits").then((result) => {
-    const mots = result.motsInterdits || [];
-    afficherMots(mots);
-  });
 
   if (addButton && addText) {
     addButton.addEventListener("click", () => {
@@ -140,7 +95,7 @@ if (typeof browser !== "undefined" && browser.storage) {
           browser.storage.local
             .set({ motsInterdits: nouveauxMots })
             .then(() => {
-              afficherMots(nouveauxMots);
+              chargerTableAnonymisation();
               addText.value = "";
             });
         });
@@ -150,56 +105,8 @@ if (typeof browser !== "undefined" && browser.storage) {
     });
   }
 
-  // Initialisation du toggle (AIAL-State = extension active ou non)
-  browser.storage.local.get("AIAL-State").then((result) => {
-    const isEnabled = result["AIAL-State"] === true;
-    toggle.checked = isEnabled;
-  });
-
-  // Toggle modifie AIAL-State
-  toggle.addEventListener("change", () => {
-    const newState = toggle.checked;
-    browser.storage.local.set({ "AIAL-State": newState });
-  });
-
-  // Initialisation de l'onglet selon AIAL-IsAnonymisedMode
-  browser.storage.local.get("AIAL-IsAnonymisedMode").then((result) => {
-    const isAnonymised = result["AIAL-IsAnonymisedMode"] === true;
-
-    toggle.checked = true; // ← Optionnel, à synchroniser selon AIAL-State si besoin
-
-    if (isAnonymised) {
-      anonymiseTab.classList.add("active");
-      watchTab.classList.remove("active");
-      sectionWords.style.display = "none";
-      sectionTable.style.display = "block";
-      chargerTableAnonymisation();
-    } else {
-      anonymiseTab.classList.remove("active");
-      watchTab.classList.add("active");
-      sectionWords.style.display = "block";
-      sectionTable.style.display = "none";
-    }
-  });
-
-  watchTab.addEventListener("click", () => {
-    watchTab.classList.add("active");
-    anonymiseTab.classList.remove("active");
-    sectionWords.style.display = "block";
-    sectionTable.style.display = "none";
-
-    browser.storage.local.set({ "AIAL-IsAnonymisedMode": false });
-  });
-
-  anonymiseTab.addEventListener("click", () => {
-    watchTab.classList.remove("active");
-    anonymiseTab.classList.add("active");
-    sectionWords.style.display = "none";
-    sectionTable.style.display = "block";
-
-    browser.storage.local.set({ "AIAL-IsAnonymisedMode": true });
-    chargerTableAnonymisation();
-  });
+  // Load the anonymisation table on startup
+  chargerTableAnonymisation();
 } else {
   console.error("❌ browser.storage est inaccessible");
 }
