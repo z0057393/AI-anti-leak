@@ -1,31 +1,30 @@
 export default class ListenerManager {
-  constructor(htmlManager, llmProviderManager, matchManager) {
-    this._HtmlManager = htmlManager;
+  constructor(llmProviderManager, apiRepository) {
     this._LlmProviderManager = llmProviderManager;
-    this._MatchManager = matchManager;
-    this._onPromptKeydown;
+    this._ApiRepository = apiRepository;
+    this._buttonClickListener = null;
   }
 
-  async startAnonymisedMode() {
-    const llm = await this._LlmProviderManager.Get();
+  async listenButton() {
+    let llm = await this._LlmProviderManager.Get();
+    const button = llm.button.element;
 
-    this._cleanupPreviousListeners(llm);
-    this._HtmlManager.validate(llm);
-    this._initAnonymiserListerners(llm);
-  }
+    if (!button) return;
 
-  _initAnonymiserListerners(llm) {
-    this._onPromptKeydown = (event) => {
-      this._MatchManager.controleInAnonymiserMode(llm, event.key);
-    };
+    if (!button.dataset.listenerAdded) {
+      if (this._buttonClickListener && this._buttonClickListenerButton) {
+        this._buttonClickListenerButton.removeEventListener(
+          "click",
+          this._buttonClickListener
+        );
+      }
 
-    llm.prompt.addEventListener("keydown", this._onPromptKeydown);
-  }
+      this._buttonClickListener = () => this._ApiRepository.send(llm);
+      this._buttonClickListenerButton = button;
+      button.addEventListener("click", this._buttonClickListener);
+      button.dataset.listenerAdded = "true";
 
-  _cleanupPreviousListeners(llm) {
-    if (this._onPromptKeydown) {
-      llm.prompt.removeEventListener("keydown", this._onPromptKeydown);
-      this._onPromptKeydown = null;
+      console.log("Listener is set");
     }
   }
 }

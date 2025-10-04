@@ -1,38 +1,45 @@
-//Import Services
-
-import ModeService from "../03-Application/Services/ModeService.js";
-
-//Import Managers
-
 import LlmRepository from "../02-Infrastructure/Repository/LlmRepository.js";
-import MatchManager from "../03-Application/Managers/MatchManager.js";
-import StorageRepository from "../02-Infrastructure/Repository/StorageRepository.js";
-import HtmlManager from "../03-Application/Managers/HtmlManager.js";
 import LlmProviderManager from "../03-Application/Managers/LlmProviderManager.js";
 import ListenerManager from "../03-Application/Managers/ListenerManager.js";
-import ButtonManager from "../03-Application/Managers/ButtonManager.js";
-import ModeManager from "../03-Application/Managers/ModeManager.js";
+import ListenerService from "../03-Application/Services/ListenerService.js";
+import ApiRepository from "../02-Infrastructure/Repository/ApiRepository.js";
 
 //Init Dependency
+
+const apiRepository = new ApiRepository();
 const llmRepository = new LlmRepository();
-const storageRepository = new StorageRepository();
-const htmlManager = new HtmlManager(llmRepository);
 const llmProviderManager = new LlmProviderManager(llmRepository);
-const buttonManager = new ButtonManager();
-const matchManager = new MatchManager(
-  storageRepository,
-  htmlManager,
-  buttonManager,
-  llmProviderManager
-);
-const listenerManager = new ListenerManager(
-  htmlManager,
-  llmProviderManager,
-  matchManager
-);
-const modeManager = new ModeManager(listenerManager);
 
-const modeService = new ModeService(modeManager);
+const listenerManager = new ListenerManager(llmProviderManager, apiRepository);
 
-//Start
-modeService.initialize();
+const listenerService = new ListenerService(listenerManager);
+
+/* Main */
+function startObserving() {
+  const parent = document.body;
+  if (!parent) {
+    setTimeout(startObserving, 50);
+    return;
+  }
+
+  const observerCallback = (mutationsList) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === "childList") {
+        const elem = document.querySelector("#composer-submit-button");
+        if (elem) {
+          listenerService.listenButton();
+        }
+      }
+    }
+  };
+
+  const observer = new MutationObserver(observerCallback);
+
+  observer.observe(parent, { childList: true, subtree: true });
+}
+
+if (document.body) {
+  startObserving();
+} else {
+  window.addEventListener("DOMContentLoaded", startObserving);
+}

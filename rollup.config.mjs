@@ -46,4 +46,14 @@ export default [
     },
     plugins,
   },
+  {
+    input: "src/01-Presentation/background.js",
+    output: {
+      file: "dist/bundle-background.js",
+      format: "iife",
+      name: "Backgournd",
+      sourcemap: false,
+    },
+    plugins,
+  },
 ];
